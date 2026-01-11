@@ -24,7 +24,7 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true })); // Lets us read form data
 app.use(express.static(path.join(__dirname, 'public'))); // Serves our CSS
 app.use(session({
-    secret: process.env.SESSION_SECRET ||'secret-vibe-key',
+    secret: 'secret-vibe-key',
     resave: false,
     saveUninitialized: false
 }));
@@ -56,13 +56,22 @@ app.post('/register', async (req, res) => {
     res.redirect('/login');
 });
 
-app.post('/login', passport.authenticate('local', {
-    successRedirect: '/',        // This sends them back to the main feed
-    failureRedirect: '/login',   // This sends them back to login if they fail
-    failureFlash: false          // Set to true only if you use connect-flash
-}));
+// Use custom callback so we can surface error messages to the login page
+app.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) return next(err);
+    if (!user) {
+      const msg = info && info.message ? info.message : 'Invalid credentials';
+      return res.redirect('/login?error=' + encodeURIComponent(msg) + '&username=' + encodeURIComponent(req.body.username || ''));
+    }
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      return res.redirect('/');
+    });
+  })(req, res, next);
+});
 
-app.get('/login', (req, res) => res.render('login'));
+app.get('/login', (req, res) => res.render('login', { error: req.query.error || null, username: req.query.username || '' }));
 app.get('/register', (req, res) => res.render('register'));
 app.get('/logout', (req, res) => {
     req.logout(() => {
@@ -184,5 +193,5 @@ app.post('/comment/:id', async (req, res) => {
     res.redirect(redirectToComment);
 });
 
-const PORT = process.env.PORT || 3000; // Use the service's port OR 3000 locally
-app.listen(PORT, () => console.log(`🚀 Live on port ${PORT}`));
+const PORT = 3000;
+app.listen(PORT, () => console.log(`🚀 QuoteVibe is live at http://localhost:${PORT}`));
