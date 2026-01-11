@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="/style.css">
+    <title><%= profileUser.username %>'s Vibe</title>
+</head>
+<body>
+    <div class="site-wrap">
+        <nav class="site-nav">
+            <div class="brand" onclick="window.location.href='/'"><h1> WordKeeper</h1></div>
+            <div class="nav-links"><a href="/">← Back to Feed</a></div>
+        </nav>
+
+        <div style="text-align:center; margin-bottom:18px">
+            <h2 style="margin:6px 0">@<%= profileUser.username %></h2>
+            <p class="muted">Joined <%= new Date(profileUser.joined).toLocaleDateString() %></p>
+            <hr style="border:0; border-top:1px solid var(--border); margin-top:14px">
+        </div>
+
+        <h3 style="margin-bottom:14px; color:var(--accent)">Posts & Reposts</h3>
+
+        <% if (quotes.length === 0) { %>
+            <p class="muted">This user hasn't posted any vibes yet.</p>
+        <% } %>
+
+        <% quotes.forEach(quote => { %>
+            <div class="quote-card">
+                <% 
+                     let displayData = quote.isRepost && quote.originalQuote ? quote.originalQuote : quote; 
+                     const displayId = (displayData && displayData._id) ? displayData._id : quote._id;
+                %>
+
+                <p>"<%= displayData.text %>"</p>
+                <small class="muted">— <%= displayData.authorName || 'Anonymous' %></small>
+
+                <div class="actions" style="margin-top:12px; border-top:1px solid var(--border); padding-top:10px">
+                    <form action="/like/<%= displayId %>" method="POST">
+                        <button type="submit" class="action-btn like">Like <span class="badge"><%= (displayData.likes||[]).length %></span></button>
+                    </form>
+
+                    <form action="/repost/<%= displayId %>" method="POST">
+                        <button type="submit" class="action-btn repost">Repost <span class="badge"><%= (displayData.reposts||[]).length %></span></button>
+                    </form>
+
+                    <button type="button" class="action-btn" onclick="document.getElementById('comment-input-<%= displayId %>')?.scrollIntoView({behavior:'smooth'}); document.getElementById('comment-input-<%= displayId %>')?.focus()">Comments <span class="badge"><%= (displayData.comments||[]).length %></span></button>
+                </div>
+
+                <% if (user) { %>
+                    <div style="margin-top:10px;">
+                        <form action="/comment/<%= displayId %>" method="POST" style="display:flex; gap:8px; margin-top:8px">
+                            <input id="comment-input-<%= displayId %>" type="text" name="commentText" placeholder="Write a comment..." required>
+                            <button type="submit" class="btn">Reply</button>
+                        </form>
+                    </div>
+                <% } %>
+            </div>
+        <% }) %>
+
+    </div>
+</body>
+</html>

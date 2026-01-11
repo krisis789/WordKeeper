@@ -1,0 +1,159 @@
+:root {
+  /* Light theme (default) */
+  --bg: #ffffff;
+  --card: #ffffff;
+  --text: #0b0b0b;
+  --muted: #6b7280;
+  --accent: #000000;
+  --accent-2: #111111;
+  --border: rgba(0,0,0,0.08);
+
+  /* Button colors */
+  --btn-bg: #000000;
+  --btn-text: #ffffff;
+
+  /* Action/badge neutral */
+  --action-border: rgba(0,0,0,0.06);
+  --badge-bg: rgba(0,0,0,0.06);
+}
+
+/* Dark theme (no blue; neutral grayscale only) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #071023;
+    --card: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    --text: #e6eef6;
+    --muted: #9aa6b2;
+    --accent: #e6eef6;    /* neutral (no blue) */
+    --accent-2: #cbd5e1;
+    --border: rgba(255,255,255,0.06);
+
+    /* Button colors for dark mode (neutral) */
+    --btn-bg: rgba(255,255,255,0.06);
+    --btn-text: #ffffff;
+
+    --action-border: rgba(255,255,255,0.06);
+    --badge-bg: rgba(255,255,255,0.06);
+  }
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  -webkit-font-smoothing:antialiased;
+}
+
+.site-wrap {
+  width: 100%;
+  max-width: 920px;
+  margin: 28px auto;
+  padding: 0 20px;
+}
+
+nav.site-nav {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.brand { display:flex; gap:10px; align-items:center; cursor:pointer }
+.brand h1 { margin:0; font-size:1.25rem; color:var(--accent) }
+.nav-links a { margin-left:12px; text-decoration:none; color:var(--muted); font-weight:600 }
+.nav-links a.primary { color:var(--accent); font-weight:700 }
+
+.quote-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 18px;
+  border-radius: 14px;
+  width: 100%;
+  margin-bottom: 16px;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.04);
+}
+
+/* Action area */
+.actions { display:flex; gap:12px; margin-top:10px; color:var(--muted); align-items:center; flex-wrap:wrap }
+.actions form { display:inline-block; margin:0; }
+
+.action-btn {
+  background: transparent;
+  border: 1px solid var(--action-border);
+  color: var(--muted);
+  padding:8px 10px;
+  border-radius:999px;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  transition: all .12s ease;
+}
+.action-btn:hover { color: var(--accent); transform: translateY(-1px); }
+
+/* Optional modifiers */
+.action-btn.like { border-color: var(--action-border); }
+.action-btn.repost { border-color: var(--action-border); }
+
+/* Primary .btn uses explicit --btn-bg / --btn-text so light mode buttons are black with white text */
+.btn {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border:none;
+  padding:8px 16px;
+  border-radius:999px;
+  font-weight:700;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.btn.ghost {
+  background:transparent;
+  color:var(--muted);
+  border:1px solid var(--border);
+}
+
+.badge {
+  background: var(--badge-bg);
+  padding:2px 8px;
+  border-radius:999px;
+  font-weight:700;
+  color: var(--text);
+  font-size:0.85rem;
+  min-width:26px;
+  text-align:center;
+}
+
+/* Form controls */
+textarea { width:100%; background:transparent; border:none; color:var(--text); font-size:1.05rem; resize:none; outline:none; margin-bottom:10px }
+
+input[type="text"], input[type="password"], input[type="email"] {
+  width:100%;
+  padding:10px 12px;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background: rgba(0,0,0,0.02);
+  color:var(--text);
+  margin-bottom:10px;
+  outline:none;
+}
+
+.form-row { display:flex; gap:10px; align-items:center }
+.muted { color: var(--muted) }
+
+small.time { color: var(--muted) }
+.center { text-align:center }
+.repost { border-left:4px solid rgba(0,0,0,0.04); padding-left:12px }
+
+@media (max-width:560px) {
+  .site-wrap { padding:0 12px }
+  .brand h1 { font-size:1rem }
+}

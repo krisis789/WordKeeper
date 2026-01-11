@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="/style.css">
+    <title>WordKeeper</title>
+    </head>
+<body>
+    <div class="site-wrap">
+        <nav class="site-nav">
+            <div class="brand" onclick="window.location.href='/'">
+                <h1> WordKeeper</h1>
+            </div>
+            <div class="nav-links">
+                <% if (user) { %>
+                    <span class="muted">Hi, <strong><a href="/user/<%= user.username %>" style="color:var(--text); text-decoration:none">@<%= user.username %></a></strong></span>
+                    <a href="/logout" class="primary">Logout</a>
+                <% } else { %>
+                    <a href="/login" class="primary">Login</a>
+                    <a href="/register">Register</a>
+                <% } %>
+            </div>
+        </nav>
+
+        <% if (user) { %>
+            <div class="quote-card">
+                <form action="/post-quote" method="POST">
+                    <textarea name="text" placeholder="Post your quote here" required rows="3"></textarea>
+                    <input type="text" name="authorName" placeholder="Original author (optional)">
+                    <div style="display:flex; justify-content:flex-end;"><button type="submit" class="btn">Post</button></div>
+                </form>
+            </div>
+        <% } %>
+
+        <% quotes.forEach(quote => { %>
+            <div class="quote-card">
+                <p>"<%= quote.text %>"</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
+                    <small class="muted">— <%= quote.authorName || 'Anonymous' %></small>
+                    <small class="muted">Posted by <% if (quote.postedBy) { %><a href="/user/<%= quote.postedBy.username %>" style="color:var(--accent); text-decoration:none">@<%= quote.postedBy.username %></a><% } else { %>@ghost<% } %></small>
+                </div>
+
+                <% if (quote.isRepost) { %>
+                    <div class="quote-card repost" style="margin-top:12px">
+                        <div style="font-size:0.8rem; color:var(--muted); margin-bottom:6px">🔄 Repost</div>
+                        <p>"<%= quote.text %>"</p>
+                    </div>
+                <% } %>
+
+                <div class="actions" style="margin-top:12px; border-top:1px solid var(--border); padding-top:10px">
+                    <% if (user && quote.postedBy && quote.postedBy.equals(user._id)) { %>
+                        <form action="/delete/<%= quote._id %>" method="POST"><button type="submit" class="btn ghost" style="background:none;color:#ff7b7b;border:none">Delete</button></form>
+                    <% } %>
+
+                    <form action="/like/<%= quote._id %>" method="POST">
+                        <button type="submit" class="action-btn like">Like <span class="badge"><%= quote.likes ? quote.likes.length : 0 %></span></button>
+                    </form>
+
+                    <form action="/repost/<%= quote._id %>" method="POST">
+                        <button type="submit" class="action-btn repost">Repost <span class="badge"><%= quote.reposts ? quote.reposts.length : 0 %></span></button>
+                    </form>
+
+                    <button type="button" class="action-btn" onclick="document.getElementById('comment-input-<%= quote._id %>')?.focus()">Comments <span class="badge"><%= quote.comments.length %></span></button>
+                </div>
+
+                <div style="margin-top:10px; background: rgba(255,255,255,0.02); padding:10px; border-radius:8px">
+                    <% quote.comments.forEach(comment => { %>
+                        <p style="font-size:0.9rem; margin:6px 0"><strong>@<%= comment.user ? comment.user.username : 'ghost' %>:</strong> <%= comment.text %></p>
+                    <% }) %>
+
+                    <% if (user) { %>
+                        <form action="/comment/<%= quote._id %>" method="POST" style="display:flex; gap:8px; margin-top:8px">
+                            <input id="comment-input-<%= quote._id %>" type="text" name="commentText" placeholder="Write a comment..." required>
+                            <button type="submit" class="btn">Reply</button>
+                        </form>
+                    <% } %>
+                </div>
+            </div>
+        <% }) %>
+
+    </div>
+</body>
+</html>

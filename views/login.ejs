@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="/style.css">
+    <title>Login — WordKeeper</title>
+</head>
+<body>
+    <div class="site-wrap center">
+        <nav class="site-nav">
+            <div class="brand" onclick="window.location.href='/'"><h1>✨ WordKeeper</h1></div>
+            <div class="nav-links"><a href="/register">Register</a></div>
+        </nav>
+
+        <div style="max-width:420px; margin:0 auto">
+            <div class="quote-card">
+                <h2 style="margin-top:0">Welcome back</h2>
+                <form action="/login" method="POST">
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <div style="display:flex; justify-content:flex-end;"><button type="submit" class="btn">Login</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
