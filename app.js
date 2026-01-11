@@ -24,7 +24,7 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true })); // Lets us read form data
 app.use(express.static(path.join(__dirname, 'public'))); // Serves our CSS
 app.use(session({
-    secret: 'secret-vibe-key',
+    secret: process.env.SESSION_SECRET ||'secret-vibe-key',
     resave: false,
     saveUninitialized: false
 }));
